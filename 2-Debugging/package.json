@@ -1,0 +1,15 @@
+{
+  "name": "debugging-node",
+  "version": "1.0.0",
+  "description": "Setup debugging with node",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "Emir Delic",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
