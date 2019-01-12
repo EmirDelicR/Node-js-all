@@ -121,4 +121,10 @@ Press again F5 now it executed with server and debugger
 
 ## express
 
+Install
+
+```console
+npm install --save express
+```
+
 [TOP](#content)
