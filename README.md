@@ -251,4 +251,12 @@ const rootDir = require("../util/path");
 res.sendFile(path.join(rootDir, "views", "shop.html"));
 ```
 
+**Serving files statically**
+
+Serving files like css from public folder
+
+```javascript
+app.use(express.static(path.join(__dirname, "public")));
+```
+
 [TOP](#content)
