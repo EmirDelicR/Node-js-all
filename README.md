@@ -5,6 +5,7 @@
 [Intro](#intro) <br/>
 [Basic Concepts](#basic) <br/>
 [Express.js](#express) <br/>
+[Dynamic Content](#dynamic-content) <br/>
 
 ## intro
 
@@ -257,6 +258,33 @@ Serving files like css from public folder
 
 ```javascript
 app.use(express.static(path.join(__dirname, "public")));
+```
+
+[TOP](#content)
+
+## dynamic-content
+
+**Template's Engine**
+
+[Pug Docs:](https://pugjs.org/api/getting-started.html)
+
+[Handlebars Docs:](https://handlebarsjs.com/)
+
+[EJS Docs:](http://ejs.co/#docs)
+
+Installing of EJS ( there are also Handlebars and Pug)
+
+```console
+npm install --save ejs
+```
+
+set engine
+
+```javascript
+app.set("view engine", "ejs");
+
+// Syntax
+<%= variable %>
 ```
 
 [TOP](#content)
