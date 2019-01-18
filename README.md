@@ -121,10 +121,134 @@ Press again F5 now it executed with server and debugger
 
 ## express
 
+[Express](https://expressjs.com/en/guide/routing.html)
+
 Install
 
 ```console
 npm install --save express
+```
+
+Core concept of express is use of middleware
+
+```javascript
+app.use((req, res, next) => {
+  // ... do stuff
+  next(); // Continue to next middleware
+});
+// .use() allows to add new middleware action
+
+app.use((req, res, next) => {
+  console.log("In another middleware!");
+  /** Sending response */
+  res.send("<h1>Hello!</h1>");
+});
+// res. can use all functions from node like (setHeaders, write ...)
+
+// Remove http by adding
+app.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
+```
+
+**Handling routes**
+
+use() can receive args like (path, callback) path by default is '/'
+
+```javascript
+app.use("/test", (req, res, next) => {
+  console.log("In 'test-page' middleware!");
+  /** Sending response */
+  res.send("<h1>Hello from test page!</h1>");
+});
+/** always put '/' last because code is execute from top-to-bottom */
+app.use((req, res, next) => {
+  console.log("In another middleware!");
+  /** Sending response */
+  res.send("<h1>Hello from '/'!</h1>");
+});
+```
+
+**Parsing request**
+
+Instal body-parser package
+
+```console
+npm install --save body-parser
+```
+
+```javascript
+const bodyParser = require("body-parser");
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use("/some-form", (req, res, next) => {
+  res.send(
+    "<form action='/product' method='POST'><input type='text' name='title'><button type='submit'>Add Product</button></form>"
+  );
+});
+
+app.post("/product", (req, res, next) => {
+  console.log(req.body);
+  res.redirect("/");
+});
+```
+
+**Using router**
+
+Create router folder (see in 3-Express)
+
+```javascript
+// create routes/shop.js file
+const express = require("express");
+
+const router = express.Router();
+
+/** always put '/' last because code is execute from top-to-bottom */
+router.get((req, res, next) => {
+  /** Sending response */
+  res.send("<h1>Hello from '/'!</h1>");
+});
+
+module.exports = router;
+
+// in app .js
+const shopRoutes = require("./routes/shop");
+app.use(shopRoutes);
+```
+
+**Handle 404 error page**
+
+```javascript
+// At the bottom of all routs (if all routes fail)
+app.use((req, res, next) => {
+  res.status(404).send("<h1>Page not found!</h1>");
+});
+```
+
+**Filtering paths**
+
+```javascript
+app.use("/admin", adminRoutes);
+// now all routes in admin.js file start with /admin/route-name
+```
+
+**Serving html pages**
+
+```javascript
+// create folder views and add shop.html file
+res.sendFile(path.join(__dirname, "..", "views", "shop.html"));
+// __dirname -> point to current folder
+// ".." -> go up one level
+// views -> go to folder
+// shop.html -> go to file
+
+// Or create folder util/path.js
+const path = require("path");
+module.exports = path.dirname(process.mainModule.filename);
+// In admin.js
+const rootDir = require("../util/path");
+res.sendFile(path.join(rootDir, "views", "shop.html"));
 ```
 
 [TOP](#content)
