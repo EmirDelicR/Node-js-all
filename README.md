@@ -6,6 +6,7 @@
 [Basic Concepts](#basic) <br/>
 [Express.js](#express) <br/>
 [Dynamic Content](#dynamic-content) <br/>
+[MVC](#mvc) <br/>
 
 ## intro
 
@@ -285,6 +286,64 @@ app.set("view engine", "ejs");
 
 // Syntax
 <%= variable %>
+```
+
+[TOP](#content)
+
+## mvc
+
+[More on MVC:](https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Modern_web_app_architecture/MVC_architecture)
+
+Creating controllers
+
+```javascript
+// create file controllers/products.js
+exports.getAddProduct = (req, res, next) => {
+  res.render("add-product", {
+    pageTitle: "Add Product",
+    path: "/admin/add-product",
+    formsCSS: true,
+    productCSS: true,
+    activeAddProduct: true
+  });
+};
+// In routes/admin.js
+```
+
+Creating models
+
+```javascript
+// create file models/product.js
+const products = [];
+
+/** Can be done as a function  */
+// module.exports = function Product() {}
+/** or Class */
+module.exports = class Product {
+  constructor(title) {
+    this.title = title;
+  }
+
+  save() {
+    products.push(this);
+  }
+
+  /**
+   * Static make sure that you can call method directly on the class itself
+   * and not on instance so basically you dont need instance to call this function
+   * like:
+   *    let b = new Product("Some title");
+   *    b.fetchAll();
+   * you can call it like
+   *    Product.fetchAll()
+   */
+  static fetchAll() {
+    return products;
+  }
+};
+
+// In controller/products.js
+const Product = require("../models/product");
 ```
 
 [TOP](#content)
