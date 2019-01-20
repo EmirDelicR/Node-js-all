@@ -473,6 +473,8 @@ db.execute("SELECT * FROM products")
   });
 ```
 
+For DB query's check model/products.js
+
 [TOP](#content)
 
 ## nosql)
