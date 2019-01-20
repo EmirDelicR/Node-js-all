@@ -7,6 +7,9 @@
 [Express.js](#express) <br/>
 [Dynamic Content](#dynamic-content) <br/>
 [MVC](#mvc) <br/>
+[Dynamic Routes & Advance Models](#DRAM) <br/>
+[SQL](#sql) <br/>
+[NoSQL](#nosql) <br/>
 
 ## intro
 
@@ -345,5 +348,31 @@ module.exports = class Product {
 // In controller/products.js
 const Product = require("../models/product");
 ```
+
+[TOP](#content)
+
+## DRAM
+
+[Official Routing Docs:](https://expressjs.com/en/guide/routing.html)
+
+Creating link with id passed to route
+
+```javascript
+<a href="/products/<%= product.id %>">Details</a>;
+// create an route
+router.get("/products/:productId");
+// get params from rout in controller
+exports.getProducts = (req, res, next) => {
+  const productId = req.params.productId; // this name must be same as in route
+};
+```
+
+[TOP](#content)
+
+## sql)
+
+[TOP](#content)
+
+## nosql)
 
 [TOP](#content)
