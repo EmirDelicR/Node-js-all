@@ -371,6 +371,108 @@ exports.getProducts = (req, res, next) => {
 
 ## sql)
 
+[MySQL/ SQL in General:](https://www.w3schools.com/sql/)
+
+[Node MySQL Package:](https://github.com/sidorares/node-mysql2)
+
+Install mysql server
+
+```console
+sudo apt install mysql-server
+sudo apt install net-tools
+-- check if server is running
+sudo netstat -tap | grep mysql
+-- If the server is not running correctly, you can type the following command to start it:
+sudo service mysql restart
+-- Install mysql workbench
+sudo apt install mysql-workbench
+
+-- configure server
+cd /etc/mysql
+ls
+-- find my.cnf
+sudo vim my.cnf
+-- You can overwrite config if create an file in home/user/my.cnf
+```
+
+[MYSQL-Server-config](https://support.rackspace.com/how-to/configuring-mysql-server-on-ubuntu/)
+
+Reset mysql root password
+
+```console
+service mysql stop
+sudo mysqld_safe --skip-grant-tables &
+
+-- If having problem with this step run
+sudo mkdir -p /var/run/mysqld
+sudo chown mysql:mysql /var/run/mysqld
+
+-- Rerun pervious command and run
+mysql -u root
+-- This will add you
+mysql>
+
+-- Then run
+mysql>FLUSH PRIVILEGES;
+mysql>SET PASSWORD FOR root@'localhost' = PASSWORD('password');
+-- TO Exit run CTRL+D
+
+-- Now run
+service mysql stop
+service mysql start
+
+```
+
+[MYSQL-Password reset](https://help.ubuntu.com/community/MysqlPasswordReset)
+[Other Option](https://www.vultr.com/docs/reset-mysql-root-password-on-debian-ubuntu)
+
+Install node package for mysql
+
+```console
+npm install --save mysql2
+```
+
+Create file util/database.js
+
+```javascript
+const mysql = require("mysql2");
+
+const pool = mysql.createPool({
+  host: "127.0.0.1",
+  user: "root",
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD
+});
+
+module.exports = pool.promise();
+```
+
+To work with .env in node
+
+```console
+npm install dotenv --save
+```
+
+In App.js
+
+```javascript
+const dotenv = require("dotenv");
+dotenv.config();
+```
+
+Execute query in app.js
+
+```javascript
+const db = require("./util/database");
+db.execute("SELECT * FROM products")
+  .then(result => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
+
 [TOP](#content)
 
 ## nosql)
