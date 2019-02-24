@@ -9,6 +9,7 @@
 [MVC](#mvc) <br/>
 [Dynamic Routes & Advance Models](#DRAM) <br/>
 [SQL](#sql) <br/>
+[Sequelize](#sequelize)<br/>
 [NoSQL](#nosql) <br/>
 
 ## intro
@@ -369,7 +370,7 @@ exports.getProducts = (req, res, next) => {
 
 [TOP](#content)
 
-## sql)
+## sql
 
 [MySQL/ SQL in General:](https://www.w3schools.com/sql/)
 
@@ -477,6 +478,94 @@ For DB query's check model/products.js
 
 [TOP](#content)
 
-## nosql)
+## sequelize
+
+Sequelize is an Object-Relational Mapping Library
+
+```console
+npm install --save sequelize
+```
+
+Creating an model
+
+```javascript
+const Product = sequelize.define("product", {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true
+  }
+});
+```
+
+Sync (create) all models in database as tables
+
+```javascript
+// in app.js
+sequelize
+  .sync()
+  .then(result => {
+    console.log("Sequelize result from sync: ", result);
+    /** Init server */
+    app.listen(port, hostname, () => {
+      console.log(`Server running at http://${hostname}:${port}/`);
+    });
+  })
+  .catch(err => {
+    console.log("Error from Sequelize sync: ", err);
+  });
+```
+
+Insert data
+
+```javascript
+Product.create({
+  title: title,
+  price: price,
+  imageUrl: imageUrl,
+  description: description
+})
+  .then(result => {
+    console.log("Product is created!");
+    // console.log("Result from Product.create: ", result);
+  })
+  .catch(err => {
+    console.log("postAddProduct error in admin.js: ", err);
+  });
+```
+
+Creating relations
+
+```javascript
+Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+User.hasMany(Product);
+```
+
+Creating middleware
+
+```javascript
+// in app.js
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log("Error from User middleware: ", err));
+});
+// so now you can use in admin.js in postAddProduct function
+req.user.createProduct({
+  title: title,
+  price: price,
+  imageUrl: imageUrl,
+  description: description
+});
+// createProduct is automatically created from relations
+```
+
+[TOP](#content)
+
+## nosql
 
 [TOP](#content)
