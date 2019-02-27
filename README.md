@@ -482,6 +482,8 @@ For DB query's check model/products.js
 
 Sequelize is an Object-Relational Mapping Library
 
+[Sequelize Official Docs](http://docs.sequelizejs.com/)
+
 ```console
 npm install --save sequelize
 ```
