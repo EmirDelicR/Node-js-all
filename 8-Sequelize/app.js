@@ -17,6 +17,8 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 const hostname = "127.0.0.1";
 const port = 3001;
@@ -44,10 +46,14 @@ User.hasMany(Product);
 User.hasOne(Cart);
 Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem });
+/** Not needed just for better understanding */
 Product.belongsToMany(Cart, { through: CartItem });
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: OrderItem });
 
 sequelize
-  // .sync({ force: true })
+  //.sync({ force: true })
   .sync()
   .then(result => {
     return User.findByPk(1);
