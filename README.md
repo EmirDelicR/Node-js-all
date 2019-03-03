@@ -570,4 +570,23 @@ req.user.createProduct({
 
 ## nosql
 
+NoSQL & MongoDB
+
+[MongoDB Official Docs:](https://docs.mongodb.com/manual/core/security-encryption-at-rest/https://docs.mongodb.com/manual/)
+
+[SQL vs NoSQL:](https://academind.com/learn/web-dev/sql-vs-nosql/)
+
+[Learn more about MongoDB:](https://academind.com/learn/mongodb)
+
+Setup: Go to MongoDB create a account and create a new cluster
+
+In mongoDb we have: database, collections (tables) and documents (data)
+
+Installing drivers
+
+```console
+npm install --save mongodb
+```
+
+Check connection in util/database and in app.js
 [TOP](#content)
