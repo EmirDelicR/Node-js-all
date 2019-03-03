@@ -1,7 +1,7 @@
 {
-  "name": "routes-models",
+  "name": "8-Sequelize",
   "version": "1.0.0",
-  "description": "Dynamic Routes and Advance Modules",
+  "description": "Sequelize for SQL",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
