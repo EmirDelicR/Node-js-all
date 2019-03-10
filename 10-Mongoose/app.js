@@ -1,11 +1,11 @@
+const dotenv = require("dotenv");
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
-const dotenv = require("dotenv");
 dotenv.config({ debug: true });
+const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
-const mongoConnect = require("./util/database").mongoConnect;
 const app = express();
 
 const User = require("./models/user");
@@ -23,9 +23,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  User.findById("5c7c08f71c9d4400006f57df")
+  User.findById("5c84ea1dd53d6531c5d83634")
     .then(user => {
-      req.user = new User(user);
+      req.user = user;
       next();
     })
     .catch(err => console.log("Error from User middleware: ", err));
@@ -36,8 +36,25 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-  app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+mongoose
+  .connect(process.env.MONGO_CONNECTION_URL, { useNewUrlParser: true })
+  .then(result => {
+    User.findOne().then(user => {
+      if (!user) {
+        const user = new User({
+          name: "Emir",
+          email: "emir@test.com",
+          cart: {
+            items: []
+          }
+        });
+        user.save();
+      }
+    });
+    app.listen(port, hostname, () => {
+      console.log(`Server running at http://${hostname}:${port}/`);
+    });
+  })
+  .catch(err => {
+    console.log("Error from mongoose connection: ", err);
   });
-});

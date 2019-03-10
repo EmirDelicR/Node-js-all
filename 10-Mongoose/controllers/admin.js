@@ -13,9 +13,10 @@ exports.postAddProduct = (req, res, next) => {
     title: req.body.title,
     imageUrl: req.body.imageUrl,
     price: req.body.price,
-    description: req.body.description
+    description: req.body.description,
+    userId: req.user
   };
-  const product = new Product(productData, null, req.user._id);
+  const product = new Product(productData);
   product
     .save()
     .then(result => {
@@ -56,9 +57,12 @@ exports.postEditProduct = (req, res, next) => {
     price: req.body.price,
     description: req.body.description
   };
-  const product = new Product(productUpdatedData, prodId);
-  product
-    .save()
+
+  Product.findById(prodId)
+    .then(product => {
+      product = Object.assign(product, productUpdatedData);
+      return product.save();
+    })
     .then(response => {
       res.redirect("/admin/products");
     })
@@ -66,7 +70,9 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
+    // .select("title price -_id") // select specific fields (-_id remove _id field)
+    // .populate("userId", "name") // make sub query fetch user but only name
     .then(products => {
       res.render("admin/products", {
         prods: products,
@@ -79,7 +85,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId)
+  Product.findByIdAndDelete(prodId)
     .then(() => {
       res.redirect("/admin/products");
     })
