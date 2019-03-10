@@ -12,6 +12,7 @@
 [Sequelize](#sequelize)<br/>
 [NoSQL](#nosql) <br/>
 [Mongoose](#mongoose)<br/>
+[Sessions and Cookies](#sessions)<br/>
 
 ## intro
 
@@ -606,5 +607,74 @@ npm install --save mongoose
 Make an connection look app.js
 
 Make an Schema look at models/product.js user.js
+
+[TOP](#content)
+
+## sessions
+
+[Sessions:](https://www.quora.com/What-is-a-session-in-a-Web-Application)
+
+[Cookies:](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)
+
+[Express-session Docs:](https://github.com/expressjs/session)
+
+**Cookies** is way of authentication set in browser (client)
+
+When to use cookies:
+
+1. To track users <br/>
+2. Do not store sensitive data in cookie<br/>
+
+```javascript
+// Setting cookie
+res.setHeader("Set-Cookie", "isLoggedIn=true");
+```
+
+**Sessions** is way of authentication set on server (back-end)
+
+```console
+npm install --save express-session
+```
+
+```javascript
+const session = require("express-session");
+app.use(
+  session({
+    secret: process.env.MY_HASH_SECRET,
+    resave: false,
+    saveUninitialized: false
+  })
+);
+// To access and set session
+req.session.isLoggedIn = true;
+```
+
+To use session with MongoDB
+
+```console
+npm install --save connect-mongodb-session
+```
+
+```javascript
+const MongoDBStore = require("connect-mongodb-session")(session);
+const store = new MongoDBStore({
+  uri: process.env.MONGO_CONNECTION_URL,
+  collection: "sessions"
+});
+
+app.use(
+  session({
+    secret: process.env.MY_HASH_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
+
+// Can also add cookie after store
+cookie: {
+  data...
+}
+```
 
 [TOP](#content)
