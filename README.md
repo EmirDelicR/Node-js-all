@@ -597,4 +597,14 @@ Check connection in util/database and in app.js
 
 Mongoose is ODM (Object Document Mapping Library)
 
+[Mongoose Official Docs:](https://mongoosejs.com/docs/)
+
+```console
+npm install --save mongoose
+```
+
+Make an connection look app.js
+
+Make an Schema look at models/product.js user.js
+
 [TOP](#content)
