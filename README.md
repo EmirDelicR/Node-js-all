@@ -13,6 +13,7 @@
 [NoSQL](#nosql) <br/>
 [Mongoose](#mongoose)<br/>
 [Sessions and Cookies](#sessions)<br/>
+[Authentication](#authentication)<br/>
 
 ## intro
 
@@ -675,6 +676,92 @@ app.use(
 cookie: {
   data...
 }
+```
+
+[TOP](#content)
+
+## authentication
+
+[Bcrypt Official Docs:](https://github.com/dcodeIO/bcrypt.js)
+
+[CSRF Attacks:](https://www.acunetix.com/websitesecurity/csrf-attacks/)
+
+**Encrypting password**
+
+```console
+npm install --save bcryptjs
+```
+
+```javascript
+const bcrypt = require("bcryptjs");
+
+// This returns promises
+bcrypt.hash(password, 12)
+  .then(hashPass => {
+    ...
+  });
+
+// Compare passwords
+bcrypt
+  .compare(password, user.password)
+  .then(passwordMatch => {
+    if(!passwordMatch) {
+      return res.redirect('/login')
+    }
+  })
+```
+
+**Route protection**
+
+```javascript
+// Create an middleware
+module.exports = (req, res, next) => {
+  if (!req.session.isLoggedIn) {
+    return res.redirect("/login");
+  }
+  next();
+};
+
+// In routes folder
+const isAuth = require("../middleware/is-auth");
+router.get("/add-product", isAuth, adminController.getAddProduct);
+```
+
+**CSRF**
+
+Cross-Site Request Forgery
+
+```console
+npm install --save csurf
+```
+
+```javascript
+const csrf = require("csurf");
+const csrfProtection = csrf();
+// Add this line after session init
+app.use(csrfProtection);
+// Generate token and pass to view (shop.js getIndex function)
+csrfToken: req.csrfToken();
+// Add this to every view
+<input type="hidden" name="_csrf" value="<%= csrfToken %>" />;
+```
+
+Show user error message using session
+
+```console
+npm install --save connect-flash
+```
+
+```javascript
+const flash = require("connect-flash");
+// Add this after session init
+app.use(flash());
+// Use in code during redirect (look in controllers/auth.js in 12-Authentication)
+req.flash("error", "Invalid email or password!");
+res.redirect("/");
+// Now go to getLogin function
+errorMessage: req.flash("error");
+// Set in view (login.ejs)
 ```
 
 [TOP](#content)
