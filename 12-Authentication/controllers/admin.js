@@ -60,17 +60,19 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findById(prodId)
     .then(product => {
+      if (product.userId.toString() !== req.user._id.toString()) {
+        return res.redirect("/");
+      }
       product = Object.assign(product, productUpdatedData);
-      return product.save();
-    })
-    .then(response => {
-      res.redirect("/admin/products");
+      return product.save().then(response => {
+        res.redirect("/admin/products");
+      });
     })
     .catch(err => console.log("Error from postEditProduct: ", err));
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({ userId: req.user._id })
     // .select("title price -_id") // select specific fields (-_id remove _id field)
     // .populate("userId", "name") // make sub query fetch user but only name
     .then(products => {
@@ -85,7 +87,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByIdAndDelete(prodId)
+  Product.deleteOne({ _id: prodId, userId: req.user._id })
     .then(() => {
       res.redirect("/admin/products");
     })
