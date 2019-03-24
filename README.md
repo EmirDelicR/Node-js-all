@@ -14,6 +14,10 @@
 [Mongoose](#mongoose)<br/>
 [Sessions and Cookies](#sessions)<br/>
 [Authentication](#authentication)<br/>
+[Email sending](#email)<br/>
+[Validation](#validation)<br/>
+[Error handling](#errors)<br/>
+[File Upload](#upload)<br/>
 
 ## intro
 
@@ -762,6 +766,284 @@ res.redirect("/");
 // Now go to getLogin function
 errorMessage: req.flash("error");
 // Set in view (login.ejs)
+<% if(errorMessage) { %>
+  <div class="user-message user-message--error"><%= errorMessage %></div>
+<% } %>
+```
+
+**Password Reset**
+
+see in module 12-Authentication
+
+1. Create an view (reset.ejs), controller (auth.js / getReset)
+
+2. Make an action postReset in auth.js
+
+```javascript
+// This is build in NODE.js
+const crypto = require("crypto");
+// See rest of code in controllers/auth.js actions
+// getReset and postReset
+// also getNewPassword and post NewPassword
+```
+
+**Authorization**
+
+Restricting user for some functionality (edit post from other users)
+
+```javascript
+// Add filter for product
+Product.find({ userId: req.user._id });
+```
+
+[TOP](#content)
+
+## email
+
+[Nodemailer Official Docs:](https://nodemailer.com/about/)
+
+[SendGrid Official Docs:](https://sendgrid.com/docs/)
+
+```console
+npm install --save nodemailer nodemailer-sendgrid-transport
+```
+
+```javascript
+const nodemailer = require("nodemailer");
+const sendgridTransport = require("nodemailer-sendgrid-transport");
+
+// Go to SendGrid site to settings / API Keys and create API key
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key: API_KEY
+    }
+  })
+);
+
+// TO use
+transporter
+  .sendMail({
+    to: email,
+    from: "test@test.com",
+    subject: "Subject",
+    html: "<h1>Welcome!</h1>"
+  })
+  .then()
+  .catch();
+```
+
+[TOP](#content)
+
+## validation
+
+[Express-Validator Docs:](https://express-validator.github.io/docs/)
+
+[Validator.js Docs:](https://github.com/chriso/validator.js)
+
+1. Validate on Client Side (Optional: Improve user experience)
+
+2. Validate on Server Side (Required)
+
+```console
+npm install --save express-validator
+```
+
+```javascript
+// in roures/auth.js module 13-Validation
+const { check } = require("express-validator/check");
+router.post("/signup", check("email").isEmail(), authController.postSignup);
+
+// in controllers/auth.js
+const { validationResult } = require("express-validator/check");
+
+const errors = validationResult(req);
+if (!errors.isEmpty()) {
+  return res.status(422).render("auth/signup", {
+    path: "/signup",
+    pageTitle: "Signup",
+    errorMessage: errors.array()
+  });
+}
+```
+
+Sanitizing data - modify data to be valid
+
+[TOP](#content)
+
+## errors
+
+[http-status-code](https://httpstatuses.com/)
+
+[Error Handling in Express.js](https://expressjs.com/en/guide/error-handling.html)
+
+**_Synchronous code use_**
+
+**try-catch**
+
+Can throw error like:
+
+```javascript
+throw new Error("Message");
+// or
+try {
+  // logic
+} catch (err) {
+  // log err
+}
+```
+
+**_Asynchronous code use_**
+
+**then()-catch()**
+
+Can throw error like:
+
+```javascript
+.then(res => {
+  // ...logic
+}).catch(err => {
+  // log err
+})
+```
+
+[TOP](#content)
+
+## upload
+
+[Multer Official Docs:](https://github.com/expressjs/multer)
+
+[Streaming Files:](https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93)
+
+[Generating PDF-s with PDFKit:](http://pdfkit.org/docs/getting_started.html)
+
+In frontend create an image picker
+
+```html
+<form method="POST" enctype="multipart/form-data">
+  <div class="form-control">
+    <label for="image">Image</label>
+    <input type="file" name="image" id="image" />
+  </div>
+</form>
+```
+
+To read file data (binary) install package
+
+```console
+npm install --save multer
+```
+
+```javascript
+// in app.js
+const multer = require("multer");
+// image is name of file picker
+// single || multi
+app.use(multer().single("image"));
+
+// To access file in controller
+image: req.file;
+// req.file will give buffer
+// to make an folder and give random hash name add config to multer
+app.use(multer({ dest: "images" }).single("image"));
+// This will add (path) folder images and store image inside
+```
+
+Other better setup
+
+```javascript
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // provide err or null if wont to ignore
+    // 'images' is folder to store image
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    // provide err or null if wont to ignore
+    // new Date().toISOString is current time in string (create unique image)
+    // file.originalname is name of image with extension
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  }
+});
+
+app.use(multer({ storage: fileStorage }).single("image"));
+```
+
+To filter files
+
+```javascript
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    // provide err or null to ignore
+    // true if want to store, false to not store
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
+```
+
+Serving images on web site
+
+1. Use static way
+
+```javascript
+app.use("/images", express.static(path.join(__dirname, "images")));
+// In all views where you load image add / before like '/product.imageUrl'
+```
+
+2. Serving files not static way (Download invoices)
+
+Create link for download
+
+```html
+<a target="_blank" href="/orders/<%= order._id %>">Invoice</a>
+```
+
+Create an route (routes/shop.js)
+
+```javascript
+router.get("/orders/:orderId", isAuth, shopController.getInvoice);
+```
+
+Create na controller (controllers/shop.js) **See getInvoice**
+
+**Generate PDF (PDFKit - create PDF on Node server)**
+
+```console
+npm install --save pdfkit
+```
+
+```javascript
+const PDFDocument = require("pdfkit");
+
+// Create PDF-s
+const pdfDoc = new PDFDocument();
+res.setHeader("Content-Type", "application/pdf");
+// inline - open inline
+// attachment - download directly
+res.setHeader("Content-Disposition", `inline; filename='${invoiceName}'`);
+// Store on server
+pdfDoc.pipe(fs.createWriteStream(invoicePath));
+// Pipe to client
+pdfDoc.pipe(res);
+```
+
+Delete Files (util/file.js)
+
+In controllers/admin.js
+
+```javascript
+const fileHelper = require("../util/file");
+fileHelper.deleteFile(product.imageUrl);
 ```
 
 [TOP](#content)
