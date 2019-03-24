@@ -1,5 +1,5 @@
 {
-  "name": "16- REST api",
+  "name": "rest_api",
   "version": "1.0.0",
   "description": "Rest api build with node and express",
   "main": "app.js",
@@ -8,7 +8,7 @@
     "start": "nodemon app.js",
     "start-server": "node app.js"
   },
-  "author": "Emir Delic",
+  "author": "emir delic",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.18.3"
