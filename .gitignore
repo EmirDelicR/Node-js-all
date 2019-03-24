@@ -62,3 +62,9 @@ typings/
 
 # vscode 
 .vscode
+
+# invoices
+invoices/
+
+# images
+images/
