@@ -18,6 +18,9 @@
 [Validation](#validation)<br/>
 [Error handling](#errors)<br/>
 [File Upload](#upload)<br/>
+[Pagination](#pagination)<br/>
+[Payments](#payments)<br/>
+[REST API](#rest)<br/>
 
 ## intro
 
@@ -1045,5 +1048,89 @@ In controllers/admin.js
 const fileHelper = require("../util/file");
 fileHelper.deleteFile(product.imageUrl);
 ```
+
+[TOP](#content)
+
+## pagination
+
+[pagination in SQL code:](https://stackoverflow.com/questions/3799193/mysql-data-best-way-to-implement-paging)
+
+[Sequelize, how to add pagination:](http://docs.sequelizejs.com/manual/tutorial/querying.html#pagination-limiting)
+
+Fetching data in Chunks
+
+In controllers/shop.js function getIndex
+
+```javascript
+const ITEMS_PRE_PAGE = 2;
+
+Product.find()
+  .skip((page - 1) * ITEMS_PRE_PAGE)
+  .limit(ITEMS_PRE_PAGE);
+```
+
+Pass data to view look at pagination.ejs
+
+**_Side note_**
+
+Look at 15-Pagination-Payments implementation of async delete of product
+
+1. go to public/js/admin.js
+2. routes/admin the rout for delete is changed
+3. controllers/admin.js function deleteProduct is changed
+
+[More on the fetch API:](https://developers.google.com/web/updates/2015/03/introduction-to-fetch)
+
+[More on AJAX Requests:](https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX/Getting_Started)
+
+[TOP](#content)
+
+## payments
+
+[Official Stripe.js Docs:](https://stripe.com/docs)
+
+Stripe - create an account and use API key
+
+```html
+<form action="/create-order" method="POST">
+  <script
+    src="https://checkout.stripe.com/checkout.js"
+    class="stripe-button"
+    data-key="AddAPIKeyHere"
+    data-amount="<%= totalSum * 100 %>"
+    data-name="Your Order"
+    data-description="All the items you ordered"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto"
+    data-currency="usd"
+  ></script>
+</form>
+```
+
+Add stripe to project
+
+```console
+npm install --save stripe
+```
+
+```javascript
+// look controllers/shop.js
+// 'sk_test_hash' is an secret key from stripe
+const stripe = require("stripe")("sk_test_hash");
+// Look controllers/shop.js function postOrder
+```
+
+Resolve csrf token problem by moving route to app.js
+
+```javascript
+// This
+router.post("/create-order", isAuth, shopController.postOrder);
+// move to app.js
+app.post("/create-order", isAuth, shopController.postOrder);
+```
+
+[TOP](#content)
+
+## rest
 
 [TOP](#content)
