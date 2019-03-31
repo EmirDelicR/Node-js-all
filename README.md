@@ -1135,4 +1135,30 @@ app.post("/create-order", isAuth, shopController.postOrder);
 
 Rest - Representational State Transfer
 
+CORS - Cross-Origin Resource Sharing
+
+```javascript
+// Remove CORS error (on server side)
+app.use((req, res, next) => {
+  // Set this to your client site like localhost:8000/
+  // * means allow to all
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "PUT, POST, DELETE, PATCH, GET");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+```
+
+Create react client
+
+```console
+npx create-react-app client-react
+```
+
+Create vue client
+
+```console
+vue create client-vue
+```
+
 [TOP](#content)
