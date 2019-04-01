@@ -21,6 +21,7 @@
 [Pagination](#pagination)<br/>
 [Payments](#payments)<br/>
 [REST API](#rest)<br/>
+[Web Socket](#websocket)<br/>
 
 ## intro
 
@@ -1162,3 +1163,93 @@ vue create client-vue
 ```
 
 [TOP](#content)
+
+## websocket
+
+On server side:
+
+```console
+npm install --save socket.io
+```
+
+```javascript
+// Look file util/websocket.js
+let io;
+
+const init = server => {
+  io = require("socket.io")(server);
+  return io;
+};
+
+const connect = server => {
+  const io = init(server);
+  io.on("connection", socket => {
+    console.log("Client connected with WebSocket!");
+  });
+};
+
+const getIO = () => {
+  if (!io) {
+    throw new Error("Socket.io not initialized!");
+  }
+  return io;
+};
+
+module.exports = {
+  init,
+  connect,
+  getIO
+};
+
+// Use this function in util/db.js when you establish connection
+const io = require("./websocket");
+io.connect(server);
+
+// If some errors ocurred set this headers (3000 is client)
+res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+res.header("Access-Control-Allow-Credentials", "true");
+```
+
+On client side:
+
+```console
+npm install --save socket.io-client
+```
+
+```javascript
+// Look file pages/Feed/Feed.js
+import openSocket from "socket.io-client";
+
+// in componentDidMount
+openSocket(process.env.REACT_APP_DOMAIN);
+```
+
+To use in controller in server side (feed.js)
+
+```javascript
+// During the creation of post
+// emit - send message to all users connected
+// broadcast - exclude user that make an post
+io.getIO().emit("posts", { action: "create", post: post });
+// "posts" - name of the function (I use module here)
+// { } - data tha you pass to client that listening this function
+```
+
+To use on client side and update view
+
+```javascript
+// In Feed.js componentDidMount
+const socket = openSocket(process.env.REACT_APP_DOMAIN);
+socket.on("posts", data => {
+  if (data.action === "create") {
+    this.addPost(data.post);
+  }
+});
+// addPost is function belows
+```
+
+[TOP](#content)
+
+```
+
+```
