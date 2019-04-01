@@ -17,22 +17,23 @@ const deleteFile = filePath => {
   });
 };
 
-const createPagination = (model, page) => {
+const createPagination = async (model, page) => {
   const currentPage = page || DEFAULT_PAGE;
   const perPage = ITEM_PRE_PAGE;
 
-  return model
+  return await model
     .find()
+    .populate("creator")
     .skip((currentPage - DEFAULT_PAGE) * perPage)
     .limit(perPage);
 };
 
-const hash = element => {
-  return bcrypt.hash(element, HASH_SALT);
+const hash = async element => {
+  return await bcrypt.hash(element, HASH_SALT);
 };
 
-const validateHash = (element, toCompereWith) => {
-  return bcrypt.compare(element, toCompereWith);
+const validateHash = async (element, toCompereWith) => {
+  return await bcrypt.compare(element, toCompereWith);
 };
 
 const createJWT = data => {
