@@ -24,6 +24,7 @@ const createPagination = async (model, page) => {
   return await model
     .find()
     .populate("creator")
+    .sort({ createdAt: -1 })
     .skip((currentPage - DEFAULT_PAGE) * perPage)
     .limit(perPage);
 };

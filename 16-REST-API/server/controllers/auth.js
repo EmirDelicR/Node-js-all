@@ -61,8 +61,8 @@ exports.login = async (req, res, next) => {
       email: loadedUser.email,
       userId: loadedUser._id.toString()
     };
-    const token = helpers.createJWT(tokenData);
 
+    const token = helpers.createJWT(tokenData);
     res.status(200).json({ token: token, userId: tokenData.userId });
   } catch (err) {
     next(err);
