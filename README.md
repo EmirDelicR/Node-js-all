@@ -22,6 +22,7 @@
 [Payments](#payments)<br/>
 [REST API](#rest)<br/>
 [Web Socket](#websocket)<br/>
+[GraphQL](#graphql)<br/>
 
 ## intro
 
@@ -1134,7 +1135,7 @@ app.post("/create-order", isAuth, shopController.postOrder);
 
 ## rest
 
-Rest - Representational State Transfer
+Rest - Representational State Transfer (stateless, client-independent)
 
 CORS - Cross-Origin Resource Sharing
 
@@ -1165,6 +1166,10 @@ vue create client-vue
 [TOP](#content)
 
 ## websocket
+
+[Socket.io Official Docs](https://socket.io/get-started/chat/)
+
+[Alternative Websocket Library:](https://www.npmjs.com/package/express-ws)
 
 On server side:
 
@@ -1250,6 +1255,147 @@ socket.on("posts", data => {
 
 [TOP](#content)
 
+## graphql
+
+GraphQl is stateless, client-independent with higher query flexibility
+
+[Detailed Guide on GraphQL](https://graphql.org)
+
+Only use POST request
+
+```javascript
+// GraphQL
+{
+  // This can be (mutation, subscription)
+  query {
+    // End point
+    user {
+      // Fields
+      name,
+      age
+    }
+  }
+}
 ```
 
+**Query** - Retrieve data ("GET")
+
+**Mutation** - Manipulate data ("POST", "PUT", "PATCH", "DELETE")
+
+**Subscription** - Real-time connection via web socket
+
+```console
+npm install --save graphql express-graphql
 ```
+
+Create folder qraphql and add two files schema and resolvers
+
+```javascript
+// schema.js
+const { buildSchema } = require("graphql");
+
+// ! after means mandatory
+module.exports = buildSchema(`
+    type TestData {
+        text: String!
+        views: Int!
+    }
+
+    type RootQuery {
+        hello: TestData!
+    }
+
+    schema {
+        query: RootQuery
+    }
+`);
+```
+
+```javascript
+// resolvers.js
+module.exports = {
+  // name of function need to match RootQuery
+  hello() {
+    return {
+      text: "Hello world!",
+      views: 1234
+    };
+  }
+};
+```
+
+```javascript
+// config.js
+const graphqlServer = require("express-graphql");
+const Schema = require("./schema");
+const Resolver = require("./resolvers");
+
+const setup = app => {
+  app.use(
+    "/graphql",
+    graphqlServer({
+      schema: Schema,
+      rootValue: Resolver
+    })
+  );
+};
+
+module.exports = {
+  setup
+};
+
+// in app.js
+// Import GraphQL
+const graphQl = require("./graphgl/config");
+graphQl.setup(app);
+
+// to test qraphql
+graphQl.setup(app, true);
+// look qraphql/config.js
+// now go to http://localhost:8080/graphql
+```
+
+**Validation in qraphql**
+
+```console
+npm install --save validator
+```
+
+Look at graphgl/validation/validator
+
+**Creating query's**
+
+```javascript
+/* Mutation */
+const queryData = {
+  query: `
+    mutation UpdateStatus($status: String!) {
+      updateStatus(status: $status) {
+        name
+      }
+    }
+  `,
+  variables: {
+    status: this.state.status
+  }
+};
+
+/* Fetching data */
+const queryData = {
+  query: `
+    query FetchPosts($page: Int) {
+      posts(page: $page) {
+        posts {
+          _id
+          title
+        }
+      } 
+    }
+  `,
+  variables: {
+    page: page
+  }
+};
+```
+
+[TOP](#content)
