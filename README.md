@@ -23,6 +23,8 @@
 [REST API](#rest)<br/>
 [Web Socket](#websocket)<br/>
 [GraphQL](#graphql)<br/>
+[Deployment](#deployment)<br/>
+[Testing node](#testing)<br/>
 
 ## intro
 
@@ -1396,6 +1398,143 @@ const queryData = {
     page: page
   }
 };
+```
+
+[TOP](#content)
+
+## deployment
+
+**Using environment variables**
+
+Create .env file or .env.development .env.production
+
+or create nodemon.json file
+
+```javascript
+{
+  "env": {
+    "VARIABLE": "KEY",
+    ...
+  }
+}
+
+```
+
+**Secure Response Headers**
+
+Use helmet for node.js
+
+```console
+npm install --save helmet
+```
+
+```javascript
+const helmet = require("helmet");
+app.use(helmet());
+```
+
+**Compressing assets**
+
+Use compression for node.js
+
+```console
+npm install --save compression
+```
+
+```javascript
+const compression = require("compression");
+app.use(compression());
+```
+
+**Logger**
+
+Use morgan for node.js
+
+[logging (with higher control)](https://blog.risingstack.com/node-js-logging-tutorial/)
+
+```console
+npm install --save morgan
+```
+
+```javascript
+const morgan = require("morgan");
+const fs = require("fs");
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" } // "a" means append
+);
+
+app.use(morgan("combined", { stream: accessLogStream }));
+```
+
+**SSL/TLS**
+
+```console
+openssl req -nodes -new -x509 -keyout server.key -out server.cert
+
+# common name must be set to localhost
+# when you deploy app you get ssl key (private/public)
+# This is just for testing creating your own key
+```
+
+```javascript
+const https = require("https");
+const fs = require("fs");
+
+/*
+ * Reading SYNC way will block thread
+ * but you need this to be done
+ * and not start server until keys are set
+ */
+const privateKey = fs.readFileSync("server.key");
+const certificate = fs.readFileSync("server.cert");
+
+https
+  .createServer({ key: privateKey, cert: certificate }, app)
+  .listen(process.env.PORT || 3000);
+```
+
+[TOP](#content)
+
+## testing
+
+[Jest](https://codeburst.io/revisiting-node-js-testing-part-1-84c33bb4d711)
+
+[Mocha](https://mochajs.org/)
+
+[Chai](https://www.chaijs.com/)
+
+[Sinon](https://sinonjs.org/)
+
+**Testing with mocha and chai**
+
+```console
+npm install --save-dev mocha chai sinon
+```
+
+```javascript
+// In package.json
+"scripts": {
+  "test": "mocha", // add this
+  "start": "nodemon app.js",
+},
+```
+
+Create folder **test** (must be named test) at root of app
+
+```javascript
+// Create test (look in test/util.js)
+const expect = require("chai").expect;
+
+it("should add numbers correctly", () => {
+  const num1 = 2;
+  const num2 = 3;
+  expect(num1 + num2).to.equal(5);
+});
+```
+
+```console
+npm test
 ```
 
 [TOP](#content)
