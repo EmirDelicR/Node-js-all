@@ -1,0 +1,30 @@
+{
+  "name": "testing_node_app",
+  "version": "1.0.0",
+  "description": "testing with mocha and chai",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
+  },
+  "author": "emir delic",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2",
+    "nodemon": "^1.18.3",
+    "sinon": "^7.3.1"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.3",
+    "express-validator": "^5.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.4.20",
+    "multer": "^1.4.1",
+    "socket.io": "^2.2.0"
+  }
+}
