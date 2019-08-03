@@ -43,6 +43,12 @@ sudo n stable
 sudo n 10.15.0
 ```
 
+```console
+node
+global
+process
+```
+
 Core module in node:
 
 - **http** <br/>
