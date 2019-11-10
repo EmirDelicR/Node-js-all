@@ -84,6 +84,10 @@ run: npm run script-name
 
 [NPM](https://www.npmjs.com/)
 
+[NPM Config](https://docs.npmjs.com/misc/config)
+
+[NPM Cheat Sheets](https://kapeli.com/cheat_sheets/npm.docset/Contents/Resources/Documents/index)
+
 **Using npm package:**
 
 ```console
