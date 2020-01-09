@@ -1,5 +1,4 @@
 # Node-js-all
-Node.js how to guide.
 
 ## content
 
