@@ -60,7 +60,7 @@ Core module in node:
 To import module use:
 
 ```javascript
-const http = require("http");
+const http = require('http');
 ```
 
 **Scripts in package.json**
@@ -147,6 +147,16 @@ sudo npm install nodemon -g
 
 Press again F5 now it executed with server and debugger
 
+**_Build in debugger_**
+
+```js
+// add debugger on specific line
+debugger;
+// 1. run in terminal
+// node inspect app.js
+// 2. open chrome and go to url: chrome://inspect
+```
+
 [TOP](#content)
 
 ## express
@@ -169,9 +179,9 @@ app.use((req, res, next) => {
 // .use() allows to add new middleware action
 
 app.use((req, res, next) => {
-  console.log("In another middleware!");
+  console.log('In another middleware!');
   /** Sending response */
-  res.send("<h1>Hello!</h1>");
+  res.send('<h1>Hello!</h1>');
 });
 // res. can use all functions from node like (setHeaders, write ...)
 
@@ -186,14 +196,14 @@ app.listen(port, hostname, () => {
 use() can receive args like (path, callback) path by default is '/'
 
 ```javascript
-app.use("/test", (req, res, next) => {
+app.use('/test', (req, res, next) => {
   console.log("In 'test-page' middleware!");
   /** Sending response */
-  res.send("<h1>Hello from test page!</h1>");
+  res.send('<h1>Hello from test page!</h1>');
 });
 /** always put '/' last because code is execute from top-to-bottom */
 app.use((req, res, next) => {
-  console.log("In another middleware!");
+  console.log('In another middleware!');
   /** Sending response */
   res.send("<h1>Hello from '/'!</h1>");
 });
@@ -208,19 +218,19 @@ npm install --save body-parser
 ```
 
 ```javascript
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use("/some-form", (req, res, next) => {
+app.use('/some-form', (req, res, next) => {
   res.send(
     "<form action='/product' method='POST'><input type='text' name='title'><button type='submit'>Add Product</button></form>"
   );
 });
 
-app.post("/product", (req, res, next) => {
+app.post('/product', (req, res, next) => {
   console.log(req.body);
-  res.redirect("/");
+  res.redirect('/');
 });
 ```
 
@@ -230,7 +240,7 @@ Create router folder (see in 3-Express)
 
 ```javascript
 // create routes/shop.js file
-const express = require("express");
+const express = require('express');
 
 const router = express.Router();
 
@@ -243,7 +253,7 @@ router.get((req, res, next) => {
 module.exports = router;
 
 // in app .js
-const shopRoutes = require("./routes/shop");
+const shopRoutes = require('./routes/shop');
 app.use(shopRoutes);
 ```
 
@@ -252,14 +262,14 @@ app.use(shopRoutes);
 ```javascript
 // At the bottom of all routs (if all routes fail)
 app.use((req, res, next) => {
-  res.status(404).send("<h1>Page not found!</h1>");
+  res.status(404).send('<h1>Page not found!</h1>');
 });
 ```
 
 **Filtering paths**
 
 ```javascript
-app.use("/admin", adminRoutes);
+app.use('/admin', adminRoutes);
 // now all routes in admin.js file start with /admin/route-name
 ```
 
@@ -267,18 +277,18 @@ app.use("/admin", adminRoutes);
 
 ```javascript
 // create folder views and add shop.html file
-res.sendFile(path.join(__dirname, "..", "views", "shop.html"));
+res.sendFile(path.join(__dirname, '..', 'views', 'shop.html'));
 // __dirname -> point to current folder
 // ".." -> go up one level
 // views -> go to folder
 // shop.html -> go to file
 
 // Or create folder util/path.js
-const path = require("path");
+const path = require('path');
 module.exports = path.dirname(process.mainModule.filename);
 // In admin.js
-const rootDir = require("../util/path");
-res.sendFile(path.join(rootDir, "views", "shop.html"));
+const rootDir = require('../util/path');
+res.sendFile(path.join(rootDir, 'views', 'shop.html'));
 ```
 
 **Serving files statically**
@@ -286,7 +296,7 @@ res.sendFile(path.join(rootDir, "views", "shop.html"));
 Serving files like css from public folder
 
 ```javascript
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 ```
 
 [TOP](#content)
@@ -327,12 +337,12 @@ Creating controllers
 ```javascript
 // create file controllers/products.js
 exports.getAddProduct = (req, res, next) => {
-  res.render("add-product", {
-    pageTitle: "Add Product",
-    path: "/admin/add-product",
+  res.render('add-product', {
+    pageTitle: 'Add Product',
+    path: '/admin/add-product',
     formsCSS: true,
     productCSS: true,
-    activeAddProduct: true
+    activeAddProduct: true,
   });
 };
 // In routes/admin.js
@@ -371,7 +381,7 @@ module.exports = class Product {
 };
 
 // In controller/products.js
-const Product = require("../models/product");
+const Product = require('../models/product');
 ```
 
 [TOP](#content)
@@ -385,7 +395,7 @@ Creating link with id passed to route
 ```javascript
 <a href="/products/<%= product.id %>">Details</a>;
 // create an route
-router.get("/products/:productId");
+router.get('/products/:productId');
 // get params from rout in controller
 exports.getProducts = (req, res, next) => {
   const productId = req.params.productId; // this name must be same as in route
@@ -460,13 +470,13 @@ npm install --save mysql2
 Create file util/database.js
 
 ```javascript
-const mysql = require("mysql2");
+const mysql = require('mysql2');
 
 const pool = mysql.createPool({
-  host: "127.0.0.1",
-  user: "root",
+  host: '127.0.0.1',
+  user: 'root',
   database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD
+  password: process.env.DB_PASSWORD,
 });
 
 module.exports = pool.promise();
@@ -481,19 +491,19 @@ npm install dotenv --save
 In App.js
 
 ```javascript
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
 dotenv.config();
 ```
 
 Execute query in app.js
 
 ```javascript
-const db = require("./util/database");
-db.execute("SELECT * FROM products")
-  .then(result => {
+const db = require('./util/database');
+db.execute('SELECT * FROM products')
+  .then((result) => {
     console.log(result);
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
   });
 ```
@@ -515,13 +525,13 @@ npm install --save sequelize
 Creating an model
 
 ```javascript
-const Product = sequelize.define("product", {
+const Product = sequelize.define('product', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
-    primaryKey: true
-  }
+    primaryKey: true,
+  },
 });
 ```
 
@@ -531,15 +541,15 @@ Sync (create) all models in database as tables
 // in app.js
 sequelize
   .sync()
-  .then(result => {
-    console.log("Sequelize result from sync: ", result);
+  .then((result) => {
+    console.log('Sequelize result from sync: ', result);
     /** Init server */
     app.listen(port, hostname, () => {
       console.log(`Server running at http://${hostname}:${port}/`);
     });
   })
-  .catch(err => {
-    console.log("Error from Sequelize sync: ", err);
+  .catch((err) => {
+    console.log('Error from Sequelize sync: ', err);
   });
 ```
 
@@ -550,21 +560,21 @@ Product.create({
   title: title,
   price: price,
   imageUrl: imageUrl,
-  description: description
+  description: description,
 })
-  .then(result => {
-    console.log("Product is created!");
+  .then((result) => {
+    console.log('Product is created!');
     // console.log("Result from Product.create: ", result);
   })
-  .catch(err => {
-    console.log("postAddProduct error in admin.js: ", err);
+  .catch((err) => {
+    console.log('postAddProduct error in admin.js: ', err);
   });
 ```
 
 Creating relations
 
 ```javascript
-Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
 ```
 
@@ -574,18 +584,18 @@ Creating middleware
 // in app.js
 app.use((req, res, next) => {
   User.findByPk(1)
-    .then(user => {
+    .then((user) => {
       req.user = user;
       next();
     })
-    .catch(err => console.log("Error from User middleware: ", err));
+    .catch((err) => console.log('Error from User middleware: ', err));
 });
 // so now you can use in admin.js in postAddProduct function
 req.user.createProduct({
   title: title,
   price: price,
   imageUrl: imageUrl,
-  description: description
+  description: description,
 });
 // createProduct is automatically created from relations
 ```
@@ -649,7 +659,7 @@ When to use cookies:
 
 ```javascript
 // Setting cookie
-res.setHeader("Set-Cookie", "isLoggedIn=true");
+res.setHeader('Set-Cookie', 'isLoggedIn=true');
 ```
 
 **Sessions** is way of authentication set on server (back-end)
@@ -659,12 +669,12 @@ npm install --save express-session
 ```
 
 ```javascript
-const session = require("express-session");
+const session = require('express-session');
 app.use(
   session({
     secret: process.env.MY_HASH_SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
   })
 );
 // To access and set session
@@ -738,14 +748,14 @@ bcrypt
 // Create an middleware
 module.exports = (req, res, next) => {
   if (!req.session.isLoggedIn) {
-    return res.redirect("/login");
+    return res.redirect('/login');
   }
   next();
 };
 
 // In routes folder
-const isAuth = require("../middleware/is-auth");
-router.get("/add-product", isAuth, adminController.getAddProduct);
+const isAuth = require('../middleware/is-auth');
+router.get('/add-product', isAuth, adminController.getAddProduct);
 ```
 
 **CSRF**
@@ -757,7 +767,7 @@ npm install --save csurf
 ```
 
 ```javascript
-const csrf = require("csurf");
+const csrf = require('csurf');
 const csrfProtection = csrf();
 // Add this line after session init
 app.use(csrfProtection);
@@ -798,7 +808,7 @@ see in module 12-Authentication
 
 ```javascript
 // This is build in NODE.js
-const crypto = require("crypto");
+const crypto = require('crypto');
 // See rest of code in controllers/auth.js actions
 // getReset and postReset
 // also getNewPassword and post NewPassword
@@ -826,15 +836,15 @@ npm install --save nodemailer nodemailer-sendgrid-transport
 ```
 
 ```javascript
-const nodemailer = require("nodemailer");
-const sendgridTransport = require("nodemailer-sendgrid-transport");
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 // Go to SendGrid site to settings / API Keys and create API key
 const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
-      api_key: API_KEY
-    }
+      api_key: API_KEY,
+    },
   })
 );
 
@@ -842,9 +852,9 @@ const transporter = nodemailer.createTransport(
 transporter
   .sendMail({
     to: email,
-    from: "test@test.com",
-    subject: "Subject",
-    html: "<h1>Welcome!</h1>"
+    from: 'test@test.com',
+    subject: 'Subject',
+    html: '<h1>Welcome!</h1>',
   })
   .then()
   .catch();
@@ -868,18 +878,18 @@ npm install --save express-validator
 
 ```javascript
 // in roures/auth.js module 13-Validation
-const { check } = require("express-validator/check");
-router.post("/signup", check("email").isEmail(), authController.postSignup);
+const { check } = require('express-validator/check');
+router.post('/signup', check('email').isEmail(), authController.postSignup);
 
 // in controllers/auth.js
-const { validationResult } = require("express-validator/check");
+const { validationResult } = require('express-validator/check');
 
 const errors = validationResult(req);
 if (!errors.isEmpty()) {
-  return res.status(422).render("auth/signup", {
-    path: "/signup",
-    pageTitle: "Signup",
-    errorMessage: errors.array()
+  return res.status(422).render('auth/signup', {
+    path: '/signup',
+    pageTitle: 'Signup',
+    errorMessage: errors.array(),
   });
 }
 ```
@@ -901,7 +911,7 @@ Sanitizing data - modify data to be valid
 Can throw error like:
 
 ```javascript
-throw new Error("Message");
+throw new Error('Message');
 // or
 try {
   // logic
@@ -953,16 +963,16 @@ npm install --save multer
 
 ```javascript
 // in app.js
-const multer = require("multer");
+const multer = require('multer');
 // image is name of file picker
 // single || multi
-app.use(multer().single("image"));
+app.use(multer().single('image'));
 
 // To access file in controller
 image: req.file;
 // req.file will give buffer
 // to make an folder and give random hash name add config to multer
-app.use(multer({ dest: "images" }).single("image"));
+app.use(multer({ dest: 'images' }).single('image'));
 // This will add (path) folder images and store image inside
 ```
 
@@ -973,17 +983,17 @@ const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     // provide err or null if wont to ignore
     // 'images' is folder to store image
-    cb(null, "images");
+    cb(null, 'images');
   },
   filename: (req, file, cb) => {
     // provide err or null if wont to ignore
     // new Date().toISOString is current time in string (create unique image)
     // file.originalname is name of image with extension
-    cb(null, new Date().toISOString() + "-" + file.originalname);
-  }
+    cb(null, new Date().toISOString() + '-' + file.originalname);
+  },
 });
 
-app.use(multer({ storage: fileStorage }).single("image"));
+app.use(multer({ storage: fileStorage }).single('image'));
 ```
 
 To filter files
@@ -991,9 +1001,9 @@ To filter files
 ```javascript
 const fileFilter = (req, file, cb) => {
   if (
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg"
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
   ) {
     // provide err or null to ignore
     // true if want to store, false to not store
@@ -1004,7 +1014,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
 );
 ```
 
@@ -1013,7 +1023,7 @@ Serving images on web site
 1. Use static way
 
 ```javascript
-app.use("/images", express.static(path.join(__dirname, "images")));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 // In all views where you load image add / before like '/product.imageUrl'
 ```
 
@@ -1028,7 +1038,7 @@ Create link for download
 Create an route (routes/shop.js)
 
 ```javascript
-router.get("/orders/:orderId", isAuth, shopController.getInvoice);
+router.get('/orders/:orderId', isAuth, shopController.getInvoice);
 ```
 
 Create na controller (controllers/shop.js) **See getInvoice**
@@ -1040,14 +1050,14 @@ npm install --save pdfkit
 ```
 
 ```javascript
-const PDFDocument = require("pdfkit");
+const PDFDocument = require('pdfkit');
 
 // Create PDF-s
 const pdfDoc = new PDFDocument();
-res.setHeader("Content-Type", "application/pdf");
+res.setHeader('Content-Type', 'application/pdf');
 // inline - open inline
 // attachment - download directly
-res.setHeader("Content-Disposition", `inline; filename='${invoiceName}'`);
+res.setHeader('Content-Disposition', `inline; filename='${invoiceName}'`);
 // Store on server
 pdfDoc.pipe(fs.createWriteStream(invoicePath));
 // Pipe to client
@@ -1059,7 +1069,7 @@ Delete Files (util/file.js)
 In controllers/admin.js
 
 ```javascript
-const fileHelper = require("../util/file");
+const fileHelper = require('../util/file');
 fileHelper.deleteFile(product.imageUrl);
 ```
 
@@ -1130,7 +1140,7 @@ npm install --save stripe
 ```javascript
 // look controllers/shop.js
 // 'sk_test_hash' is an secret key from stripe
-const stripe = require("stripe")("sk_test_hash");
+const stripe = require('stripe')('sk_test_hash');
 // Look controllers/shop.js function postOrder
 ```
 
@@ -1138,9 +1148,9 @@ Resolve csrf token problem by moving route to app.js
 
 ```javascript
 // This
-router.post("/create-order", isAuth, shopController.postOrder);
+router.post('/create-order', isAuth, shopController.postOrder);
 // move to app.js
-app.post("/create-order", isAuth, shopController.postOrder);
+app.post('/create-order', isAuth, shopController.postOrder);
 ```
 
 [TOP](#content)
@@ -1156,9 +1166,9 @@ CORS - Cross-Origin Resource Sharing
 app.use((req, res, next) => {
   // Set this to your client site like localhost:8000/
   // * means allow to all
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "PUT, POST, DELETE, PATCH, GET");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, DELETE, PATCH, GET');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
 ```
@@ -1193,21 +1203,21 @@ npm install --save socket.io
 // Look file util/websocket.js
 let io;
 
-const init = server => {
-  io = require("socket.io")(server);
+const init = (server) => {
+  io = require('socket.io')(server);
   return io;
 };
 
-const connect = server => {
+const connect = (server) => {
   const io = init(server);
-  io.on("connection", socket => {
-    console.log("Client connected with WebSocket!");
+  io.on('connection', (socket) => {
+    console.log('Client connected with WebSocket!');
   });
 };
 
 const getIO = () => {
   if (!io) {
-    throw new Error("Socket.io not initialized!");
+    throw new Error('Socket.io not initialized!');
   }
   return io;
 };
@@ -1215,16 +1225,16 @@ const getIO = () => {
 module.exports = {
   init,
   connect,
-  getIO
+  getIO,
 };
 
 // Use this function in util/db.js when you establish connection
-const io = require("./websocket");
+const io = require('./websocket');
 io.connect(server);
 
 // If some errors ocurred set this headers (3000 is client)
-res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-res.header("Access-Control-Allow-Credentials", "true");
+res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+res.header('Access-Control-Allow-Credentials', 'true');
 ```
 
 On client side:
@@ -1235,7 +1245,7 @@ npm install --save socket.io-client
 
 ```javascript
 // Look file pages/Feed/Feed.js
-import openSocket from "socket.io-client";
+import openSocket from 'socket.io-client';
 
 // in componentDidMount
 openSocket(process.env.REACT_APP_DOMAIN);
@@ -1247,7 +1257,7 @@ To use in controller in server side (feed.js)
 // During the creation of post
 // emit - send message to all users connected
 // broadcast - exclude user that make an post
-io.getIO().emit("posts", { action: "create", post: post });
+io.getIO().emit('posts', { action: 'create', post: post });
 // "posts" - name of the function (I use module here)
 // { } - data tha you pass to client that listening this function
 ```
@@ -1257,8 +1267,8 @@ To use on client side and update view
 ```javascript
 // In Feed.js componentDidMount
 const socket = openSocket(process.env.REACT_APP_DOMAIN);
-socket.on("posts", data => {
-  if (data.action === "create") {
+socket.on('posts', (data) => {
+  if (data.action === 'create') {
     this.addPost(data.post);
   }
 });
@@ -1304,7 +1314,7 @@ Create folder qraphql and add two files schema and resolvers
 
 ```javascript
 // schema.js
-const { buildSchema } = require("graphql");
+const { buildSchema } = require('graphql');
 
 // ! after means mandatory
 module.exports = buildSchema(`
@@ -1329,36 +1339,36 @@ module.exports = {
   // name of function need to match RootQuery
   hello() {
     return {
-      text: "Hello world!",
-      views: 1234
+      text: 'Hello world!',
+      views: 1234,
     };
-  }
+  },
 };
 ```
 
 ```javascript
 // config.js
-const graphqlServer = require("express-graphql");
-const Schema = require("./schema");
-const Resolver = require("./resolvers");
+const graphqlServer = require('express-graphql');
+const Schema = require('./schema');
+const Resolver = require('./resolvers');
 
-const setup = app => {
+const setup = (app) => {
   app.use(
-    "/graphql",
+    '/graphql',
     graphqlServer({
       schema: Schema,
-      rootValue: Resolver
+      rootValue: Resolver,
     })
   );
 };
 
 module.exports = {
-  setup
+  setup,
 };
 
 // in app.js
 // Import GraphQL
-const graphQl = require("./graphgl/config");
+const graphQl = require('./graphgl/config');
 graphQl.setup(app);
 
 // to test qraphql
@@ -1388,8 +1398,8 @@ const queryData = {
     }
   `,
   variables: {
-    status: this.state.status
-  }
+    status: this.state.status,
+  },
 };
 
 /* Fetching data */
@@ -1405,8 +1415,8 @@ const queryData = {
     }
   `,
   variables: {
-    page: page
-  }
+    page: page,
+  },
 };
 ```
 
@@ -1439,7 +1449,7 @@ npm install --save helmet
 ```
 
 ```javascript
-const helmet = require("helmet");
+const helmet = require('helmet');
 app.use(helmet());
 ```
 
@@ -1452,7 +1462,7 @@ npm install --save compression
 ```
 
 ```javascript
-const compression = require("compression");
+const compression = require('compression');
 app.use(compression());
 ```
 
@@ -1467,14 +1477,14 @@ npm install --save morgan
 ```
 
 ```javascript
-const morgan = require("morgan");
-const fs = require("fs");
+const morgan = require('morgan');
+const fs = require('fs');
 const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, "access.log"),
-  { flags: "a" } // "a" means append
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' } // "a" means append
 );
 
-app.use(morgan("combined", { stream: accessLogStream }));
+app.use(morgan('combined', { stream: accessLogStream }));
 ```
 
 **SSL/TLS**
@@ -1488,16 +1498,16 @@ openssl req -nodes -new -x509 -keyout server.key -out server.cert
 ```
 
 ```javascript
-const https = require("https");
-const fs = require("fs");
+const https = require('https');
+const fs = require('fs');
 
 /*
  * Reading SYNC way will block thread
  * but you need this to be done
  * and not start server until keys are set
  */
-const privateKey = fs.readFileSync("server.key");
-const certificate = fs.readFileSync("server.cert");
+const privateKey = fs.readFileSync('server.key');
+const certificate = fs.readFileSync('server.cert');
 
 https
   .createServer({ key: privateKey, cert: certificate }, app)
@@ -1534,9 +1544,9 @@ Create folder **test** (must be named test) at root of app
 
 ```javascript
 // Create test (look in test/util.js)
-const expect = require("chai").expect;
+const expect = require('chai').expect;
 
-it("should add numbers correctly", () => {
+it('should add numbers correctly', () => {
   const num1 = 2;
   const num2 = 3;
   expect(num1 + num2).to.equal(5);
